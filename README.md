@@ -1,38 +1,108 @@
-# sv
+# 📘 Anchor -- Project Documentation
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+## Overview
 
-## Creating a project
+Anchor is a web app that helps users remember where they last
+placed their personal belongings. It acts as a lightweight "second
+brain" for item tracking, built to be fast, simple, and mobile-friendly.
 
-If you're seeing this, you've probably already done this step. Congrats!
+The app allows users to: - Add items they want to track (e.g., phone,
+wallet, keys). - Record the last place they saw or placed the item. -
+Quickly search and retrieve this information later. - Optionally, view a
+history of past locations.
 
-```sh
-# create a new project in the current directory
-npx sv create
+---
 
-# create a new project in my-app
-npx sv create my-app
+## Tech Stack
+
+- **Frontend + Backend**: [SvelteKit](https://kit.svelte.dev/)\
+- **Database**: PostgreSQL (Supabase)
+  hosting)\
+- **Styling**: TailwindCSS (for responsive, mobile-first UI)\
+- **Deployment**: Vercel (frontend + API routes)\
+- **Auth (future)**: Supabase Auth
+
+---
+
+## Core Features (MVP)
+
+1.  **Add Item**
+    - Name of the item (string).\
+    - Optional description/photo (future enhancement).
+2.  **Update Location**
+    - Record where the item was last seen (string).\
+    - Automatically timestamp each entry.
+3.  **View Items**
+    - List all items with their last known location.
+4.  **Search**
+    - Quickly find an item by name.
+
+---
+
+## Database Schema (Postgres)
+
+```sql
+-- Table: items
+CREATE TABLE items (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Table: locations
+CREATE TABLE locations (
+  id SERIAL PRIMARY KEY,
+  item_id INT REFERENCES items(id) ON DELETE CASCADE,
+  place TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW()
+);
 ```
 
-## Developing
+---
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+## API Endpoints (SvelteKit /api routes)
 
-```sh
-npm run dev
+- `GET /api/items` → list all items + last location.\
+- `POST /api/items` → create a new item.\
+- `GET /api/items/[id]` → get one item + location history.\
+- `PUT /api/items/[id]` → update an item's last seen location.
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+---
 
-## Building
+## File Structure
 
-To create a production version of your app:
+    src/
+      routes/
+        +layout.svelte         # Global layout
+        +page.svelte           # Dashboard: list of items
 
-```sh
-npm run build
-```
+        add/
+          +page.svelte         # Add new item form
 
-You can preview the production build with `npm run preview`.
+        items/[id]/
+          +page.svelte         # Item detail + update location
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+        api/
+          items/
+            +server.ts         # GET (list), POST (create)
+          items/[id]/
+            +server.ts         # GET (one), PUT (update location)
+
+---
+
+## Example Flow
+
+1.  User adds an item: "Phone".\
+2.  User updates location: "Living room desk".\
+3.  App saves this in `locations` with a timestamp.\
+4.  When the user searches "Phone", PocketPlace shows:
+    - Last seen: _Living room desk, 2 hours ago_.
+
+---
+
+## Future Enhancements
+
+- **Photos**: Attach an image to items.\
+- **QR Codes / NFC**: Scan to auto-update item location.\
+- **Reminders**: Notify if an item hasn't been updated in X days.\
+- **Multi-user / Auth**: Allow multiple people to use te app with accounts.
