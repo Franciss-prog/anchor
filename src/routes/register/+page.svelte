@@ -1,1 +1,5 @@
-<section class="flex items-center justify-center h-screen">asdfasf</section>
+<script>
+	import Register from '$lib/components/auth/Register.svelte';
+</script>
+
+<Register />

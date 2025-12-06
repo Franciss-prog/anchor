@@ -21,7 +21,7 @@
 				href="/register"
 				class="flex items-center gap-2 text-sm hover:opacity-90 transition-all duration-300"
 			>
-				register
+				Register
 				<ArrowRight size={14} class="transition-transform duration-300 group-hover:translate-x-1" />
 			</a>
 		{:else if isRegisterRoute}
@@ -29,7 +29,7 @@
 				href="/login"
 				class="text-xs sm:text-sm hover:opacity-90 transition-opacity duration-300 flex items-center gap-1"
 			>
-				login
+				Login
 				<ArrowRight size={14} class="transition-transform duration-300 group-hover:translate-x-1" />
 			</a>
 		{:else}

@@ -34,3 +34,7 @@ body {
 .delay-3 {
 	transition-delay: 0.3s;
 }
+
+button {
+	cursor: pointer;
+}

@@ -3,7 +3,7 @@
 	import favicon from '$lib/assets/favicon.svg';
 	import Navbar from '$lib/components/root/Navbar.svelte';
 	import Footer from '$lib/components/root/Footer.svelte';
-
+	import { Toaster } from 'svelte-sonner';
 	let { children } = $props();
 </script>
 
@@ -18,6 +18,7 @@
 </svelte:head>
 
 <main class="min-h-screen bg-light text-dark">
+	<Toaster richColors />
 	<Navbar />
 	{@render children()}
 	<Footer />

@@ -1,3 +1,5 @@
-<script></script>
+<script>
+	import Login from '$lib/components/auth/Login.svelte';
+</script>
 
-<section class="flex items-center justify-center h-screen">asdfasf</section>
+<Login />
