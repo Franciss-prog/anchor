@@ -4,24 +4,34 @@
 	import { toast } from 'svelte-sonner';
 	import { onMount } from 'svelte';
 	import { supabase } from '$lib/supabaseClient';
+	import { goto } from '$app/navigation';
 	let email = '';
 	let password = '';
 	let isVisible = false;
-
+	let loading = false;
 	onMount(() => {
 		setTimeout(() => (isVisible = true), 100);
 	});
 
 	const onLogin = async () => {
+		loading = true;
 		// form validation
 		if (!email || !password) {
 			toast.error('Email and password are required', { duration: 1200 });
 			return;
 		}
-		// TODO: implement login logic
-		try {
-			const login = await supabase.auth.signInWithPassword({ email, password });
-		} catch (error) {}
+		const { error } = await supabase.auth.signInWithPassword({
+			email,
+			password
+		});
+		if (error) {
+			toast.error(error.message, { duration: 1200 });
+			loading = false;
+			return;
+		}
+		toast.success('Login successful', { duration: 1200 });
+		loading = false;
+		setTimeout(() => goto('/dashboard'), 1201);
 	};
 </script>
 
@@ -92,10 +102,19 @@
 
 			<button
 				type="submit"
-				class="w-full px-4 py-3 bg-dark text-light text-sm font-medium hover:opacity-90 transition-all duration-300 flex items-center justify-center gap-2 group mt-6"
+				disabled={loading}
+				class="w-full px-4 py-3 bg-dark text-light text-sm font-medium transition-all duration-300 flex items-center justify-center gap-2 group mt-6 disabled:opacity-60 disabled:cursor-not-allowed"
 			>
-				Sign in
-				<ArrowRight size={16} class="transition-transform duration-300 group-hover:translate-x-1" />
+				{#if loading}
+					<div class="loader"></div>
+					<span>Logging in account...</span>
+				{:else}
+					Login
+					<ArrowRight
+						size={16}
+						class="transition-transform duration-300 group-hover:translate-x-1"
+					/>
+				{/if}
 			</button>
 		</form>
 

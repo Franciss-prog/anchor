@@ -10,8 +10,6 @@
 	});
 </script>
 
-<!-- Header -->
-
 <!-- Hero -->
 <section
 	class="max-w-4xl mx-auto px-6 sm:px-8 md:px-12 pt-24 sm:pt-32 md:pt-40 pb-20 sm:pb-28 md:pb-32"

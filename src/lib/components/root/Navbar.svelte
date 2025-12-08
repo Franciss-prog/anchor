@@ -1,13 +1,32 @@
 <script>
 	import { ArrowRight } from 'lucide-svelte';
 	import { page } from '$app/stores';
+	import { supabase } from '$lib/supabaseClient';
+	import { toast } from 'svelte-sonner';
+	import { goto } from '$app/navigation';
 
 	// SvelteKit store auto-reacts with $page
 	$: route = $page.url.pathname;
-
+	let loading = false;
 	// reactive checks
 	$: isLoginRoute = route.includes('/login');
 	$: isRegisterRoute = route.includes('/register');
+	$: isDashboardRoute = route.includes('/dashboard');
+
+	// function to logout
+	const onLogout = async () => {
+		loading = true;
+		try {
+			await supabase.auth.signOut();
+			toast.success('Logout successful', { duration: 1200 });
+			setTimeout(() => goto('/'), 1201);
+		} catch (error) {
+			toast.error('Logout failed', { duration: 1200 });
+			return;
+		} finally {
+			loading = false;
+		}
+	};
 </script>
 
 <header class="border-b border-dark/10">
@@ -32,6 +51,14 @@
 				Login
 				<ArrowRight size={14} class="transition-transform duration-300 group-hover:translate-x-1" />
 			</a>
+		{:else if isDashboardRoute}
+			<button
+				on:click={onLogout}
+				class="text-xs sm:text-sm hover:opacity-90 transition-opacity duration-300 flex items-center gap-1"
+			>
+				{loading ? 'Logging out...' : 'Logout'}
+				<ArrowRight size={14} class="transition-transform duration-300 group-hover:translate-x-1" />
+			</button>
 		{:else}
 			<a
 				href="/login"

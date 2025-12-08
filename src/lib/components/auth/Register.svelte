@@ -22,17 +22,20 @@
 	const onRegister = async () => {
 		// add loading state
 		loading = true;
+
 		// form validation
 		if (!name || !email || !password || !confirmPassword) {
 			toast.error('All fields are required', { duration: 1200 });
+			loading = false; // Reset loading state
 			return;
 		}
 
 		// check if the password and confirm password match
 		if (password !== confirmPassword) {
 			toast.error('Passwords do not match', { duration: 1200 });
-			// clrear the confirm password field
+			// clear the confirm password field
 			confirmPassword = '';
+			loading = false; // Reset loading state
 			return;
 		}
 
@@ -49,11 +52,12 @@
 		// error handling
 		if (error) {
 			toast.error(error.message, { duration: 1200 });
+			loading = false; // Reset loading state
 			return;
 		}
+
 		// return success message
 		toast.success('Account created successfully', { duration: 1200 });
-		loading = false;
 		// go to dashboard page
 		setTimeout(() => goto('/dashboard'), 1201);
 	};
@@ -70,7 +74,7 @@
 		<!-- Register Form -->
 		<form on:submit|preventDefault={onRegister} class="space-y-5">
 			<div>
-				<label for="name" class="block text-sm font-light mb-2 text-dark/60"> Full name </label>
+				<label for="name" class="block text-sm font-light mb-2 text-dark/60"> Name </label>
 				<div class="relative">
 					<div class="absolute left-3 top-1/2 -translate-y-1/2 text-dark/40">
 						<User size={18} strokeWidth={1.5} />
@@ -80,7 +84,8 @@
 						type="text"
 						bind:value={name}
 						required
-						class="w-full pl-10 pr-4 py-3 bg-transparent border border-dark/20 text-sm focus:outline-none focus:border-dark/40 transition-all duration-300 placeholder:text-dark/30"
+						disabled={loading}
+						class="w-full pl-10 pr-4 py-3 bg-transparent border border-dark/20 text-sm focus:outline-none focus:border-dark/40 transition-all duration-300 placeholder:text-dark/30 disabled:opacity-50 disabled:cursor-not-allowed"
 						placeholder="John Doe"
 					/>
 				</div>
@@ -99,7 +104,8 @@
 						type="email"
 						bind:value={email}
 						required
-						class="w-full pl-10 pr-4 py-3 bg-transparent border border-dark/20 text-sm focus:outline-none focus:border-dark/40 transition-all duration-300 placeholder:text-dark/30"
+						disabled={loading}
+						class="w-full pl-10 pr-4 py-3 bg-transparent border border-dark/20 text-sm focus:outline-none focus:border-dark/40 transition-all duration-300 placeholder:text-dark/30 disabled:opacity-50 disabled:cursor-not-allowed"
 						placeholder="you@example.com"
 					/>
 				</div>
@@ -116,7 +122,8 @@
 						type="password"
 						bind:value={password}
 						required
-						class="w-full pl-10 pr-4 py-3 bg-transparent border border-dark/20 text-sm focus:outline-none focus:border-dark/40 transition-all duration-300 placeholder:text-dark/30"
+						disabled={loading}
+						class="w-full pl-10 pr-4 py-3 bg-transparent border border-dark/20 text-sm focus:outline-none focus:border-dark/40 transition-all duration-300 placeholder:text-dark/30 disabled:opacity-50 disabled:cursor-not-allowed"
 						placeholder="••••••••"
 					/>
 				</div>
@@ -135,7 +142,8 @@
 						type="password"
 						bind:value={confirmPassword}
 						required
-						class="w-full pl-10 pr-4 py-3 bg-transparent border border-dark/20 text-sm focus:outline-none focus:border-dark/40 transition-all duration-300 placeholder:text-dark/30"
+						disabled={loading}
+						class="w-full pl-10 pr-4 py-3 bg-transparent border border-dark/20 text-sm focus:outline-none focus:border-dark/40 transition-all duration-300 placeholder:text-dark/30 disabled:opacity-50 disabled:cursor-not-allowed"
 						placeholder="••••••••"
 					/>
 				</div>
@@ -146,7 +154,8 @@
 					<input
 						type="checkbox"
 						required
-						class="w-4 h-4 mt-0.5 border border-dark/20 bg-transparent focus:outline-none focus:border-dark/40 transition-all duration-300 checked:bg-dark"
+						disabled={loading}
+						class="w-4 h-4 mt-0.5 border border-dark/20 bg-transparent focus:outline-none focus:border-dark/40 transition-all duration-300 checked:bg-dark disabled:opacity-50 disabled:cursor-not-allowed"
 					/>
 					<span class="font-light text-dark/60 leading-relaxed">
 						I agree to the
@@ -160,13 +169,15 @@
 					</span>
 				</label>
 			</div>
+
 			<button
 				type="submit"
-				class="w-full px-4 py-3 bg-dark text-light text-sm font-medium hover:opacity-90 transition-all duration-300 flex items-center justify-center gap-2 group mt-6"
 				disabled={loading}
+				class="w-full px-4 py-3 bg-dark text-light text-sm font-medium transition-all duration-300 flex items-center justify-center gap-2 group mt-6 disabled:opacity-60 disabled:cursor-not-allowed"
 			>
 				{#if loading}
 					<div class="loader"></div>
+					<span>Creating account...</span>
 				{:else}
 					Create account
 					<ArrowRight
