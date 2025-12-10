@@ -1,8 +1,7 @@
 <script>
-	import { MapPin, Search, Smartphone, ArrowRight } from 'lucide-svelte';
+	import { MapPin, Search, Smartphone } from 'lucide-svelte';
 	import { onMount } from 'svelte';
 
-	let email = '';
 	let isVisible = false;
 
 	onMount(() => {
