@@ -2,4 +2,4 @@
 	import Dashboard from '$lib/components/dashboard/Dashboard.svelte';
 </script>
 
-<section class="min-h-screen"><Dashboard /></section>
+<section class="min-h-screen flex justify-center items-center"><Dashboard /></section>

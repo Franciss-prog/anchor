@@ -4,6 +4,7 @@
 	import Navbar from '$lib/components/root/Navbar.svelte';
 	import Footer from '$lib/components/root/Footer.svelte';
 	import { Toaster } from 'svelte-sonner';
+	import { page } from '$app/state';
 	let { children } = $props();
 </script>
 
@@ -21,5 +22,7 @@
 	<Toaster richColors />
 	<Navbar />
 	{@render children()}
-	<Footer />
+	{#if page.url.pathname !== '/dashboard'}
+		<Footer />
+	{/if}
 </main>

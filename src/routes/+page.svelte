@@ -115,31 +115,3 @@
 		</div>
 	</div>
 </section>
-
-<!-- CTA -->
-<section
-	id="get-started"
-	class="max-w-5xl mx-auto px-6 sm:px-8 md:px-12 py-16 sm:py-20 md:py-24 border-t border-dark/10"
->
-	<div class="max-w-md">
-		<h2 class="text-xl sm:text-2xl font-light mb-4">Get early access</h2>
-		<p class="text-sm text-dark/50 mb-8 font-light">Sign up to be notified when we launch.</p>
-
-		<form class="space-y-4">
-			<input
-				type="email"
-				bind:value={email}
-				placeholder="Email address"
-				required
-				class="w-full px-4 py-3 bg-transparent border border-dark/20 text-sm focus:outline-none focus:border-dark/40 transition-all duration-300 placeholder:text-dark/30"
-			/>
-			<button
-				type="submit"
-				class="w-full px-4 py-3 bg-dark text-light text-sm font-medium hover:opacity-90 transition-all duration-300 flex items-center justify-center gap-2 group"
-			>
-				Join waitlist
-				<ArrowRight size={16} class="transition-transform duration-300 group-hover:translate-x-1" />
-			</button>
-		</form>
-	</div>
-</section>
