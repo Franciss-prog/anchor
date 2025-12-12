@@ -8,7 +8,13 @@ export interface ItemInterface {
 	status: 'unnoticed' | 'remembered' | 'find';
 }
 
-export const addItem = async ({ name, location, status }: ItemInterface) => {
+export const addItem = async ({ name, location }: ItemInterface) => {
+	// validate data
+	if (!name || !location) {
+		toast.error('Please fill in all the fields', { duration: 1200 });
+		return;
+	}
+	const status = 'unnoticed';
 	// insert data into supabase
 	const { error } = await supabase.from('items').insert({ name, location, status });
 	if (error) {

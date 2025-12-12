@@ -9,8 +9,6 @@ export const load: PageLoad = async () => {
 		data: { session }
 	} = await supabase.auth.getSession();
 
-	console.log(session);
-
 	if (session) {
 		toast.success('You are already logged in, Redirecting...', { duration: 1200 });
 		throw redirect(302, '/dashboard');

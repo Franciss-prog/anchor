@@ -3,31 +3,8 @@
 	import { MapPin, Clock, Eye, Brain, MapPinned, Trash } from 'lucide-svelte';
 	import Modal from './Modal.svelte';
 	import { page } from '$app/state';
-
-	let items = [
-		{
-			id: 1,
-			name: 'Car Keys',
-			location: 'Kitchen counter',
-			updatedAt: '2 hours ago',
-			status: 'unnoticed'
-		},
-		{
-			id: 2,
-			name: 'Wallet',
-			location: 'Bedroom dresser',
-			updatedAt: '5 hours ago',
-			status: 'remembered'
-		},
-		{
-			id: 3,
-			name: 'Headphones',
-			location: 'Living room couch',
-			updatedAt: '1 day ago',
-			status: 'find'
-		}
-	];
-
+	const items = page.data.items ?? [];
+	const length = items.length;
 	const statusConfig: Record<
 		string,
 		{ label: string; icon: typeof Icon; color: string; next: string }
@@ -57,39 +34,19 @@
 	let newLocation = '';
 
 	// Update item status
-	const updateItemStatus = (id: number) => {
-		// find the item based on id
-		items = items.map((item) => {
-			// if the id matches on params
-			if (item.id === id) {
-				// update the status
-				const current = item.status || 'unnoticed';
-				return { ...item, status: statusConfig[current].next };
-			}
-			return item;
-		});
-	};
-	const deleteItem = (id: number) => {
-		// find the item based on id
-		items = items.filter((item) => item.id !== id);
-	};
+	// const updateItemStatus = (id: number) => {
+	// 	// find the item based on id
+	// 	items = items.map((item) => {
+	// 		// if the id matches on params
+	// 		if (item.id === id) {
+	// 			// update the status
+	// 			const current = item.status || 'unnoticed';
+	// 			return { ...item, status: statusConfig[current].next };
+	// 		}
+	// 		return item;
+	// 	});
+	// };
 	// Add new item
-	const addItem = () => {
-		if (!newName.trim() || !newLocation.trim()) return;
-		items = [
-			...items,
-			{
-				id: Math.max(...items.map((i) => i.id)) + 1,
-				name: newName,
-				location: newLocation,
-				updatedAt: 'just now',
-				status: 'unnoticed'
-			}
-		];
-		newName = '';
-		newLocation = '';
-		showModal = false;
-	};
 </script>
 
 <section class="max-w-5xl mx-auto px-6 sm:px-8 md:px-12 py-5 sm:py-6 flex flex-col gap-4">
@@ -99,8 +56,8 @@
 
 	<main class="flex flex-col gap-6">
 		<div class="text-sm text-dark/50 font-light mb-4">
-			{items.length}
-			{items.length === 1 ? 'item' : 'items'}
+			<span>{length}</span>
+			<span>{length === 1 ? 'item' : 'items'}</span>
 		</div>
 
 		<div class="space-y-3">
@@ -123,7 +80,6 @@
 								<span>{item.updatedAt}</span>
 							</div>
 							<button
-								on:click={() => updateItemStatus(item.id)}
 								class="px-3 py-1.5 border text-xs font-light transition-all duration-300 flex items-center gap-1.5 {statusConfig[
 									item.status
 								].color}"
@@ -137,7 +93,6 @@
 							</button>
 							{#if item.status === 'find'}
 								<button
-									on:click={() => deleteItem(item.id)}
 									class="px-3 py-1.5 border text-xs font-light transition-all duration-300 flex items-center gap-1.5 text-red-600 border-red-200 hover:border-red-300 bg-red-50"
 								>
 									<Trash size={14} strokeWidth={1.5} />
@@ -150,7 +105,7 @@
 			{/each}
 		</div>
 
-		<Modal bind:showModal bind:newName bind:newLocation {addItem} />
+		<Modal bind:showModal bind:newName bind:newLocation />
 
 		<button
 			on:click={() => (showModal = true)}
