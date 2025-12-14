@@ -12,7 +12,6 @@ export const load: LayoutLoad = async () => {
 	}
 	// get the user id from the supabase database who is loggedIn
 	const uid = (await supabase.auth.getUser()).data.user?.id;
-	console.log(uid);
 	// return the user
 	return {
 		user: email?.split('@')[0],
