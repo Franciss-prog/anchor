@@ -4,10 +4,11 @@
 	import Modal from './Modal.svelte';
 	import { page } from '$app/state';
 	import { readableTimeFrame } from '$lib/actions/time';
-	import { updateItemStatus } from '$lib/actions/dashboard';
 	import { toast } from 'svelte-sonner';
+	import { supabase } from '$lib/supabaseClient';
 	const items = page.data.items ?? [];
 	const length = items.length;
+	const user = page.data.user ?? '';
 	const statusConfig: Record<
 		string,
 		{ label: string; icon: typeof Icon; color: string; next: string }
@@ -36,37 +37,44 @@
 	let newName = '';
 	let newLocation = '';
 	let openDropdownId: string | null = null;
-	let loading = false;
 
 	// events
 	const toggleDropdown = (itemId: string) => {
 		openDropdownId = openDropdownId === itemId ? null : itemId;
 	};
 
-	const handleStatusChange = async (itemId: number, newStatus: string, user_id: string) => {
-		// find the item
-		const foundItem = items.find((item: number) => item.id === itemId);
-		// check if the new and prev is same just throw return
-		if (!foundItem || foundItem.status === newStatus) return;
+	const handleStatusChange = async (itemId: number, newStatus: string, userId: string) => {
+		// check if the user is authenticated
+		if (!userId) return;
 
-		// perform the update to ui
-		const prevStatus = foundItem.status;
+		// find the index in items
+		const index = items.findIndex((i: any) => i.id === itemId);
+		// validate the index
+		if (index === -1) return;
 
-		// optimistic update
-		foundItem.status = newStatus;
-		openDropdownId = null;
+		// set the prev status for fallback
+		const prevStatus = items[index].status;
 
-		// perform the logic
-		try {
-			await updateItemStatus(itemId, newStatus, user_id);
-		} catch (error) {
-			// falback for optimistic update
-			foundItem.status = prevStatus;
-			// throw error
-			toast.error('Something went wrong', { duration: 1200 });
+		// validate if nothing happens to the status
+		if (prevStatus === newStatus) return;
+
+		// optimistic UI update (reactive)
+		items[index] = { ...items[index], status: newStatus };
+
+		// then do the actual update
+		const { error } = await supabase.from('items').update({ status: newStatus }).eq('id', itemId);
+
+		if (error) {
+			// rollback
+			items[index] = { ...items[index], status: prevStatus };
+			toast.error(error.message);
+			return;
 		}
-	};
 
+		toast.success('Status updated');
+		// close the dropdown
+		openDropdownId = null;
+	};
 	const handleClickOutside = (event: MouseEvent) => {
 		const target = event.target as HTMLElement;
 		if (!target.closest('.dropdown-container')) {
@@ -83,7 +91,7 @@
 
 <section class="max-w-5xl mx-auto px-6 sm:px-8 md:px-12 py-5 sm:py-6 flex flex-col gap-4">
 	<span class="text-3xl">
-		{page.data.user}, incase you forgot here is the list of items you often leave behind
+		{user}, incase you forgot here is the list of items you often leave behind
 	</span>
 	<main class="flex flex-col gap-6">
 		<div class="text-sm text-dark/50 font-light mb-4">
@@ -129,7 +137,7 @@
 									>
 										{#each Object.entries(statusConfig) as [value, config]}
 											<button
-												on:click|stopPropagation={() => handleStatusChange(item.id, value)}
+												on:click|stopPropagation={() => handleStatusChange(item.id, value, user)}
 												class="w-full px-3 py-2 text-xs font-light text-left hover:bg-dark/5 transition-colors duration-200 flex items-center gap-2 {value ===
 												item.status
 													? 'bg-dark/5'

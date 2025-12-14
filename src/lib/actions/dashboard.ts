@@ -5,6 +5,7 @@ export interface ItemInterface {
 	name: string;
 	location: string;
 	updatedAt: string;
+	newStatus: string;
 	status: 'unnoticed' | 'remembered' | 'find';
 	user_id: string;
 }
@@ -35,15 +36,19 @@ export const deleteItem = async ({ id, name, user_id }: ItemInterface) => {
 	return;
 };
 
-export const updateItemStatus = async ({ id, status, user_id }: ItemInterface) => {
+export const updateItemStatus = async ({ id, status, newStatus, user_id }: ItemInterface) => {
 	// update data from supabase
 	const { error } = await supabase
 		.from('items')
-		.update({ status })
+		.update({ status: newStatus })
 		.eq('id', id)
 		.eq('user_id', user_id);
+
+	//  error handling
 	if (error) {
 		toast.error(error.message);
 		return;
 	}
+	// success message
+	toast.success(`${status} updated to ${newStatus}`, { duration: 1200 });
 };
