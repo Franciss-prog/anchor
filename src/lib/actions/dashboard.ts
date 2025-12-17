@@ -1,7 +1,6 @@
 import { supabase } from '$lib/supabaseClient';
 import { toast } from 'svelte-sonner';
-import { items } from '$lib/stores/item';
-
+import { items } from '$lib';
 export interface ItemInterface {
 	id: number;
 	name: string;
