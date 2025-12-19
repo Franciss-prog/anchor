@@ -18,7 +18,7 @@
 	/>
 </svelte:head>
 
-<main class="min-h-screen bg-light text-dark">
+<main class="min-h-screen bg-light text-dark w-screen">
 	<Toaster richColors />
 	<Navbar />
 	{@render children()}

@@ -35,12 +35,22 @@ export const addItem = async ({ name, location }: Pick<ItemInterface, 'name' | '
 	// insert the item to the database
 	const { data, error } = await supabase.from('items').insert({ name, location }).select().single();
 
+	console.log(data);
 	// if there is an error, remove the item from the store
 	if (error) {
 		items.update((list) => list.filter((item) => item.id !== optimisticItem.id));
 		toast.error(error.message);
 		return;
 	}
+
+	// insert the data also to the item_history table
+	await supabase.from('item_history').insert({
+		item_id: data.id,
+		location: data.location,
+		item_name: data.name,
+		status: data.status
+	});
+
 	// replace the temp with real row
 	items.update((list) => list.map((item) => (item.id === optimisticItem.id ? data : item)));
 };
@@ -49,7 +59,7 @@ export const updateStatus = async (itemId: number, newStatus: ItemStatus, userId
 	if (!userId) return;
 
 	let prevItem: any;
-
+	// update the store with the new status
 	items.update((list) =>
 		list.map((item) => {
 			if (item.id !== itemId) return item;
@@ -66,6 +76,9 @@ export const updateStatus = async (itemId: number, newStatus: ItemStatus, userId
 		toast.error(error.message);
 		return;
 	}
+
+	// update the item_history table with new status
+	await supabase.from('item_history').update({ status: newStatus }).eq('item_id', itemId);
 };
 
 export const deleteItem = async (itemId: number, userId: string) => {

@@ -2,8 +2,8 @@ import { supabase } from '$lib/supabaseClient';
 import { toast } from 'svelte-sonner';
 import type { LayoutLoad } from './$types';
 
-export const load: LayoutLoad = async () => {
-	// get the email of the user
+export const load: LayoutLoad = async ({ fetch }) => {
+	// get the email of the use
 	const email = (await supabase.auth.getUser()).data.user?.email as string;
 	// if the user is logged in gte the data of items table
 	if (!email) {
