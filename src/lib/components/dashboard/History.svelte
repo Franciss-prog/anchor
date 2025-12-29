@@ -3,86 +3,92 @@
 	import { readableTimeFrame, itemHistory, clearHistory } from '$lib';
 </script>
 
-<section class="min-h-screen bg-light w-full">
-	<div class="max-w-6xl w-full px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
+<section class="min-h-screen w-full">
+	<div class="max-w-4xl mx-auto px-6 py-8">
 		<!-- Header -->
-		<header class="mb-12 sm:mb-16 flex items-center justify-between">
-			<div>
-				<h1 class="text-2xl sm:text-3xl lg:text-4xl font-light text-dark mb-3 tracking-tight">
-					History
-				</h1>
-				<p class="text-sm sm:text-base text-dark/60 font-light">Track of your items over time</p>
+		<header class="mb-12">
+			<div class="flex items-end justify-between mb-2">
+				<h1 class="text-[32px] tracking-tight">History</h1>
+				<a
+					href="/dashboard"
+					class="flex items-center gap-2 px-3 py-1.5 text-xs font-light opacity-60 hover:opacity-100 transition-opacity border border-current/10"
+				>
+					<CornerUpLeft size={14} strokeWidth={1.5} />
+					<span class="uppercase tracking-wider">Back</span>
+				</a>
 			</div>
-
-			<a href="/dashboard" class="text-dark/50 hover:text-dark flex transition-all">
-				<CornerUpLeft />Go To Dashboard</a
-			>
+			<div class="h-px w-full bg-current opacity-10"></div>
+			<div class="flex items-center justify-between mt-3">
+				<p class="text-xs font-light opacity-50 tracking-wider uppercase">
+					{$itemHistory.length}
+					{$itemHistory.length === 1 ? 'Entry' : 'Entries'}
+				</p>
+				<button
+					class="px-3 py-1.5 text-[10px] font-light flex items-center gap-1.5 border border-current/30 hover:border-current hover:bg-current/5 transition-all uppercase tracking-wider"
+					on:click={clearHistory}
+				>
+					Clear History
+				</button>
+			</div>
 		</header>
 
-		<!-- Meta Info -->
-		<div class="flex items-center mb-8 pb-6 border-b border-dark/10 justify-between text-dark/50">
-			<span class="text-xs sm:text-sm font-light tracking-wide uppercase">
-				{$itemHistory.length}
-				{$itemHistory.length === 1 ? 'Entry' : 'Entries'}
-			</span>
-			<button
-				class="px-3 py-1.5 text-xs flex items-center gap-1.5 bg-white border border-dark/10 hover:border-red-300 hover:bg-red-50 text-dark/60 hover:text-red-600 transition-all"
-				on:click={clearHistory}>Clear History</button
-			>
-		</div>
-
 		<!-- History List -->
-		<div class="space-y-3 sm:space-y-4">
+		<div class="space-y-2">
 			{#each $itemHistory as item}
-				<article class="bg-white border border-dark/5">
-					<div class="p-4 sm:p-6">
+				<article
+					class="bg-transparent border border-current/10 hover:border-current/30 transition-all"
+				>
+					<div class="p-4">
 						<!-- Mobile Layout -->
-						<div class="flex flex-col gap-4 sm:hidden">
+						<div class="flex flex-col gap-3 sm:hidden">
 							<div class="flex items-start justify-between gap-3">
 								<div class="flex-1 min-w-0">
-									<h3 class="text-base font-normal text-dark mb-2 tracking-tight">
+									<h3 class="text-sm font-medium mb-1.5 tracking-tight">
 										{item.item_name}
 									</h3>
-									<div class="flex items-center gap-1.5 text-xs text-dark/50">
-										<MapPin size={12} strokeWidth={1.5} />
-										<span class="truncate font-light">{item.location}</span>
+									<div class="flex items-center gap-1.5 text-[10px] opacity-40">
+										<MapPin size={10} strokeWidth={1.5} />
+										<span class="truncate font-light uppercase tracking-wider">{item.location}</span
+										>
 									</div>
 								</div>
 								<span
-									class="px-2 py-1 text-xs font-light bg-dark/5 text-dark/60 tracking-tight uppercase"
+									class="px-2 py-1 text-[9px] font-light tracking-wider uppercase opacity-60 border border-current/20"
 								>
 									{item.status}
 								</span>
 							</div>
-
 							<div
-								class="flex items-center gap-1.5 pt-2 border-t border-dark/5 text-xs text-dark/40"
+								class="flex items-center gap-1.5 pt-2 border-t border-current/5 text-[10px] opacity-30"
 							>
-								<Clock size={12} strokeWidth={1.5} />
-								<span class="font-light">{readableTimeFrame(item.created_at)}</span>
+								<Clock size={10} strokeWidth={1.5} />
+								<span class="font-light uppercase tracking-wider"
+									>{readableTimeFrame(item.created_at)}</span
+								>
 							</div>
 						</div>
 
 						<!-- Desktop Layout -->
-						<div class="hidden sm:flex items-start justify-between gap-8">
+						<div class="hidden sm:flex items-center justify-between gap-6">
 							<div class="flex-1 min-w-0">
-								<h3 class="text-lg font-normal text-dark mb-3 tracking-tight">
+								<h3 class="text-base font-medium mb-2 tracking-tight">
 									{item.item_name}
 								</h3>
-								<div class="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-dark/50">
+								<div class="flex items-center gap-4 text-[11px] opacity-40">
 									<div class="flex items-center gap-1.5">
-										<MapPin size={14} strokeWidth={1.5} />
-										<span class="font-light">{item.location}</span>
+										<MapPin size={11} strokeWidth={1.5} />
+										<span class="font-light uppercase tracking-wider">{item.location}</span>
 									</div>
-									<div class="flex items-center gap-1.5 text-dark/40">
-										<Clock size={14} strokeWidth={1.5} />
-										<span class="font-light">{readableTimeFrame(item.created_at)}</span>
+									<div class="flex items-center gap-1.5 opacity-75">
+										<Clock size={11} strokeWidth={1.5} />
+										<span class="font-light uppercase tracking-wider"
+											>{readableTimeFrame(item.created_at)}</span
+										>
 									</div>
 								</div>
 							</div>
-
 							<span
-								class="px-3 py-1.5 text-sm font-light bg-dark/5 text-dark/60 tracking-tight uppercase flex-shrink-0"
+								class="px-3 py-1.5 text-[10px] font-light tracking-wider uppercase flex-shrink-0 opacity-60 border border-current/20"
 							>
 								{item.status}
 							</span>

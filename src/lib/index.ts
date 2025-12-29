@@ -30,10 +30,15 @@ export {
 export { default as Dashboard } from '$lib/components/dashboard/Dashboard.svelte';
 export { default as Modal } from '$lib/components/dashboard/Modal.svelte';
 export { default as History } from '$lib/components/dashboard/History.svelte';
+export { default as Link } from '$lib/components/root/Link.svelte';
+export { default as Input } from '$lib/components/root/Input.svelte';
+export { default as Button } from '$lib/components/root/Button.svelte';
 
 // STORES
 export const items = writable<ItemInterface[]>([]);
 export const itemHistory = writable<HistoryInterface[]>([]);
+export const loading = writable(false);
+
 // DATA
 export { statusConfig };
 
@@ -44,3 +49,9 @@ export interface HistoryInterface extends Pick<
 > {
 	item_name: string;
 }
+
+// UTILS
+export const isDarkMode = () => {
+	return typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches;
+};
+export const lowercaseEmail = (email: string) => email.toLowerCase();
